@@ -7,17 +7,12 @@ from app.services.nocodb import as_flask_response, extract_first_record, list_re
 bp = Blueprint("content", __name__)
 
 
-
-
 @bp.route("/api/site-content", methods=["GET"])
 @handle_route_errors("Failed to load site content")
 def get_site_content():
     response = nocodb_get("Site Content", **request.args)
     record = extract_first_record(response.json())
     return jsonify(record or {}), response.status_code
-
-
-
 
 
 @bp.route("/api/banner-messages", methods=["GET"])
@@ -29,6 +24,7 @@ def get_banner_messages():
         where="(Active,eq,1)",
         sort="-Message,-Sort Order",
     )
+
 
 @bp.route("/api/banner-messages", methods=["POST"])
 @require_api_key

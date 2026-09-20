@@ -3,13 +3,6 @@ from datetime import timedelta
 
 # NocoDB table name -> environment variable holding the table ID
 TABLE_ID_ENV_VARS = {
-    "Donations and Tracking": "DONATIONS_TABLE_ID",
-    "Donator Profiles": "DONATOR_PROFILES_TABLE_ID",
-    "Public Calendar": "PUBLIC_CALENDAR_TABLE_ID",
-    "Team Calendar": "TEAM_CALENDAR_TABLE_ID",
-    "Announcements": "ANNOUNCEMENTS_TABLE_ID",
-    "Donator FAQs": "DONATOR_FAQS_TABLE_ID",
-    "Donator Messages": "DONATOR_MESSAGES_TABLE_ID",
     "Auction Items": "AUCTION_ITEMS_TABLE_ID",
     "Bids": "BIDS_TABLE_ID",
     "Winners": "WINNERS_TABLE_ID",

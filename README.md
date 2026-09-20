@@ -97,13 +97,6 @@ Copy environment variables into a `.env` file (see below). On first boot the app
 
 | Variable | Table |
 |---|---|
-| `DONATIONS_TABLE_ID` | Donations and Tracking |
-| `DONATOR_PROFILES_TABLE_ID` | Donator Profiles |
-| `PUBLIC_CALENDAR_TABLE_ID` | Public Calendar |
-| `TEAM_CALENDAR_TABLE_ID` | Team Calendar |
-| `ANNOUNCEMENTS_TABLE_ID` | Announcements |
-| `DONATOR_FAQS_TABLE_ID` | Donator FAQs |
-| `DONATOR_MESSAGES_TABLE_ID` | Donator Messages |
 | `AUCTION_ITEMS_TABLE_ID` | Auction Items |
 | `BIDS_TABLE_ID` | Bids |
 | `WINNERS_TABLE_ID` | Winners |

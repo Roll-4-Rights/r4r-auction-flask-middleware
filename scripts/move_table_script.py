@@ -11,7 +11,7 @@ import os
 import sys
 import requests
 
-NOCODB_URL = os.environ.get('NOCODB_URL', 'http://localhost:8080')
+NOCODB_URL = os.environ.get('NOCODB_URL',)
 NOCODB_EMAIL = os.environ.get('NOCODB_EMAIL')
 NOCODB_PASSWORD = os.environ.get('NOCODB_PASSWORD')
 

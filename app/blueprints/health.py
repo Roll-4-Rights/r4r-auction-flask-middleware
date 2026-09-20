@@ -10,7 +10,7 @@ bp = Blueprint("health", __name__)
 def health_check():
     try:
         response = requests.get(
-            f"{current_app.config['NOCODB_URL']}/api/v2/meta/bases/{current_app.config['NOCODB_DONATOR_BASE_ID']}/tables",
+            f"{current_app.config['NOCODB_URL']}/api/v2/meta/bases/{current_app.config['NOCODB_AUCTION_BASE_ID']}/tables",
             headers=nocodb_token_header(),
             timeout=5,
         )

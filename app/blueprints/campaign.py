@@ -53,6 +53,6 @@ def get_campaign_info():
             "startDate": settings.get("Auction Start Time", ""),
             "endDate": settings.get("Auction End Time", ""),
             "charityLogoUrl": settings.get("Charity Logo", ""),
-            "charityWebsite": settings.get("Charity Website", ""),
+            "charityWebsite": settings.get("Charity Direct Donate Link", ""),
         }
     ), 200

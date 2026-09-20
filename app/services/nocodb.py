@@ -1,10 +1,17 @@
 import requests
 from flask import current_app, jsonify
 
+SITE_BASE_TABLES = {"Site Content", "Banner Messages", "Campaign Settings"}
+
 
 def nocodb_records_url(table_name, record_id=None):
     table_id = current_app.config["TABLE_IDS"][table_name]
-    base = f"{current_app.config['NOCODB_URL']}/api/v2/tables/{table_id}/records"
+    nocodb_url = current_app.config["NOCODB_URL"]
+    if table_name in SITE_BASE_TABLES:
+        base_id = current_app.config["NOCODB_SITE_BASE_ID"]
+        base = f"{nocodb_url}/api/v1/db/data/noco/{base_id}/{table_id}"
+    else:
+        base = f"{nocodb_url}/api/v2/tables/{table_id}/records"
     return f"{base}/{record_id}" if record_id else base
 
 

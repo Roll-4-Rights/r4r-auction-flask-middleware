@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint, current_app, jsonify, request
 
 from app.decorators import require_api_key
@@ -40,6 +42,25 @@ def get_campaign_progress():
     ), 200
 
 
+def attachment_url(value):
+    """Turn a NocoDB attachment column into a full, ready-to-use file address.
+    Returns "" if nothing has been uploaded."""
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)  # some NocoDB versions send attachments as text
+        except ValueError:
+            return ""
+    if not isinstance(value, list) or not value or not isinstance(value[0], dict):
+        return ""
+    item = value[0]
+    raw = item.get("url") or item.get("path") or item.get("signedUrl") or item.get("signedPath") or ""
+    if not raw:
+        return ""
+    if raw.startswith("http"):
+        return raw
+    return f"{current_app.config['NOCODB_URL'].rstrip('/')}/{raw.lstrip('/')}"
+
+
 @bp.route("/api/campaign-info", methods=["GET"])
 @handle_route_errors("Failed to load campaign info")
 def get_campaign_info():
@@ -52,7 +73,7 @@ def get_campaign_info():
             "charityDescription": settings.get("Charity Organization Information", ""),
             "startDate": settings.get("Auction Start Time", ""),
             "endDate": settings.get("Auction End Time", ""),
-            "charityLogoUrl": settings.get("Charity Logo", ""),
+            "charityLogoUrl": attachment_url(settings.get("Charity Logo")),
             "charityWebsite": settings.get("Charity Website", ""),
             "charityDirectDonateLink": settings.get("Charity Direct Donate Link", ""),
         }

@@ -14,7 +14,7 @@ from app.config import Config
 
 load_dotenv()
 
-NOCODB_URL = os.environ.get("NOCODB_URL", "http://localhost:8080")
+NOCODB_URL = os.environ.get("NOCODB_URL")
 NOCODB_TOKEN = os.environ.get("NOCODB_TOKEN")
 TABLE_IDS = Config.require_table_ids()
 

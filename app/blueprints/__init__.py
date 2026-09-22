@@ -7,7 +7,7 @@ from app.blueprints.health import bp as health_bp
 from app.blueprints.root import bp as root_bp
 from app.blueprints.tables import bp as tables_bp
 from app.blueprints.winner_claim import bp as winner_claim_bp
-
+from app.blueprints.donator_profiles import bp as donator_profiles_bp
 
 def register_blueprints(app):
     for blueprint in (
@@ -20,5 +20,6 @@ def register_blueprints(app):
         content_bp,
         tables_bp,
         root_bp,
+        donator_profiles_bp
     ):
         app.register_blueprint(blueprint)

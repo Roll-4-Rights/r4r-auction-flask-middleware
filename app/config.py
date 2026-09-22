@@ -9,7 +9,7 @@ TABLE_ID_ENV_VARS = {
     "Banner Messages": "BANNER_MESSAGES_TABLE_ID",
     "Site Content": "SITE_CONTENT_TABLE_ID",
     "Campaign Settings": "CAMPAIGN_TABLE_ID",
-    "Donator Profiles": "NOCODB_DONATOR_PROFILES_TABLE_ID",
+    "Donator Profiles": "DONATOR_PROFILES_TABLE_ID",
 }
 
 

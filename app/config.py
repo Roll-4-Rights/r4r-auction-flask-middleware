@@ -30,11 +30,12 @@ class Config:
     DONATE_APP_URL = os.environ.get("DONATE_APP_URL", "https://donate.roll4rights.duckdns.org")
     PERMANENT_SESSION_LIFETIME = timedelta(days=int(os.environ.get("SESSION_LIFETIME_DAYS", 14)))
 
-    NOCODB_URL = os.environ.get("NOCODB_URL", "http://localhost:8080")
+    NOCODB_URL = os.environ.get("NOCODB_URL")
     NOCODB_TOKEN = os.environ.get("NOCODB_TOKEN")
     NOCODB_DONATOR_BASE_ID = os.environ.get("NOCODB_DONATOR_BASE_ID")
     NOCODB_AUCTION_BASE_ID = os.environ.get("NOCODB_AUCTION_BASE_ID")
     NOCODB_SITE_BASE_ID = os.environ.get("NOCODB_SITE_BASE_ID")
+    NOCODB_DONATOR_PROFILES_TABLE_ID = os.environ.get("NOCODB_DONATOR_PROFILES_TABLE_ID")
 
     MIDDLEWARE_API_KEY = os.environ.get("MIDDLEWARE_API_KEY")
     REGISTRATION_PASSCODE = os.environ.get("REGISTRATION_PASSCODE")

@@ -1,7 +1,7 @@
 import requests
 from flask import current_app, jsonify
 
-SITE_BASE_TABLES = {"Site Content", "Banner Messages", "Campaign Settings"}
+SITE_BASE_TABLES = {"Site Content", "Banner Messages", "Campaign Settings", "Donator Profiles"}
 
 
 def nocodb_records_url(table_name, record_id=None):

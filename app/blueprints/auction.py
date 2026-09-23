@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from app.decorators import bidder_required, csrf_protect, require_api_key
 from app.models import Bidder
-from app.services.auction import place_bid, transform_auction_item
+from app.services.auction import broadcast_bid_update, place_bid, top_bidders, transform_auction_item
 from app.services.errors import handle_route_errors
 from app.services.nocodb import as_flask_response, extract_records, nocodb_get, nocodb_post, write_record_by_id
 
@@ -12,6 +12,7 @@ bp = Blueprint("auction", __name__)
 
 def _bidder_country():
     return current_user.country if isinstance(current_user, Bidder) else None
+
 
 
 @bp.route("/api/auction/items", methods=["GET"])
@@ -74,5 +75,15 @@ def place_bid_route():
     except (ValueError, TypeError):
         return jsonify({"error": "item_id and amount must be valid"}), 400
 
+
+
+
+
+    
+
     payload, status = place_bid(current_user, item_id, amount)
+
+    if status == 201:
+        broadcast_bid_update(item_id)
+
     return jsonify(payload), status

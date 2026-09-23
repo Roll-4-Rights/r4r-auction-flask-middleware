@@ -1,6 +1,9 @@
 import random
 
 from db import display_name_exists
+from datetime import datetime, timedelta
+
+ANTI_SNIPE_WINDOW = timedelta(minutes=4)
 
 NAME_ADJECTIVES = [
     "Quiet",
@@ -84,13 +87,23 @@ def transform_auction_item(item, bidder_country=None):
 
 
 def place_bid(bidder, item_id, amount):
-    """Validate and record a bid. Returns (payload_dict, status_code)."""
+    """Validate and record a bid. If this bid lands within the
+    anti-snipe window, push the end time out so bidding stays open for 4 mins.
+    Returns (payload_dict, status_code)."""
     from app.services.nocodb import nocodb_get, nocodb_patch, nocodb_post
 
     item_resp = nocodb_get("Auction Items", item_id)
     if item_resp.status_code != 200:
         return {"error": "Auction item not found"}, 404
     item = item_resp.json()
+
+    now = datetime.utcnow()
+    end_time = None
+    end_time_raw = item.get("Auction End Time")
+    if end_time_raw:
+        end_time = datetime.fromisoformat(end_time_raw.replace("Z", "+00:00")).replace(tzinfo=None)
+        if now >= end_time:
+            return {"error": "This auction has ended"}, 400
 
     allowed = parse_shipping_countries(item.get("Shipping Countries"))
     if allowed and bidder.country.strip().lower() not in allowed:
@@ -112,13 +125,37 @@ def place_bid(bidder, item_id, amount):
     if bid_response.status_code not in (200, 201):
         return bid_response.json(), bid_response.status_code
 
-    nocodb_patch(
-        "Auction Items",
-        {
-            "Id": item_id,
-            "Current Bid": amount,
-            "Current Bidder Name": bidder.display_name,
-            "Current Bidder Id": bidder.id,
-        },
-    )
-    return {"message": "Bid placed", "amount": amount}, 201
+    update_fields = {
+        "Id": item_id,
+        "Current Bid": amount,
+        "Current Bidder Name": bidder.display_name,
+        "Current Bidder Id": bidder.id,
+    }
+
+    extended = False
+    if end_time and (end_time - now) < ANTI_SNIPE_WINDOW:
+        new_end_time = now + ANTI_SNIPE_WINDOW
+        update_fields["Auction End Time"] = new_end_time.isoformat() + "Z"
+        extended = True
+
+    nocodb_patch("Auction Items", update_fields)
+
+    return {"message": "Bid placed", "amount": amount, "extended": extended}, 201
+
+
+
+
+def broadcast_bid_update(item_id):
+    """Push the new price and leaderboard out to every connected
+    browser, right after a bid is saved. Re-reads from NocoDB rather
+    than trying to track it in memory, so everyone sees exactly what
+    the database has."""
+    from app.extensions import socketio
+    from app.services.nocodb import nocodb_get, nocodb_list
+
+    item_resp = nocodb_get("Auction Items", item_id)
+    if item_resp.status_code == 200:
+        socketio.emit("item_updated", transform_auction_item(item_resp.json()))
+
+    items = nocodb_list("Auction Items", limit=1000)
+    socketio.emit("leaderboard_updated", top_bidders(items))

@@ -71,10 +71,19 @@ def place_bid_route():
         amount = float(data["amount"])
         if amount <= 0:
             raise ValueError
+
         item_id = int(data["item_id"])
     except (ValueError, TypeError):
         return jsonify({"error": "item_id and amount must be valid"}), 400
 
+    payload, status = place_bid(current_user, item_id, amount)
+
+    if status == 201:
+        broadcast_bid_update(item_id)
+
+    return jsonify(payload), status
+
+    
 
 
 @bp.route("/api/auction/leaderboard", methods=["GET"])
@@ -109,12 +118,3 @@ def top_bidders(items, limit=8):
 
     ranked = sorted(totals.values(), key=lambda b: b["total"], reverse=True)
     return ranked[:limit]
-
-    
-
-    payload, status = place_bid(current_user, item_id, amount)
-
-    if status == 201:
-        broadcast_bid_update(item_id)
-
-    return jsonify(payload), status

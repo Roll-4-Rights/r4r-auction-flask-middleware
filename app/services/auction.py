@@ -144,6 +144,31 @@ def place_bid(bidder, item_id, amount):
 
 
 
+def top_bidders(items, limit=8):
+    """Rank bidders by how much they're currently winning, added up
+    across every item where they're the current top bid. Returns a
+    list sorted highest-total first."""
+    totals = {}
+    for item in items:
+        bidder_id = item.get("Current Bidder Id")
+        current_bid = item.get("Current Bid")
+        if not bidder_id or not current_bid:
+            continue
+        if bidder_id not in totals:
+            totals[bidder_id] = {
+                "bidder_id": bidder_id,
+                "display_name": item.get("Current Bidder Name"),
+                "total": 0,
+                "items_winning": 0,
+            }
+        totals[bidder_id]["total"] += float(current_bid)
+        totals[bidder_id]["items_winning"] += 1
+
+    ranked = sorted(totals.values(), key=lambda b: b["total"], reverse=True)
+    return ranked[:limit]
+
+
+
 
 def broadcast_bid_update(item_id):
     """Push the new price and leaderboard out to every connected
@@ -162,27 +187,3 @@ def broadcast_bid_update(item_id):
 
 
 
-
-
-    def top_bidders(items, limit=8):
-        """Rank bidders by how much they're currently winning, added up
-        across every item where they're the current top bid. Returns a
-        list sorted highest-total first."""
-        totals = {}
-        for item in items:
-            bidder_id = item.get("Current Bidder Id")
-            current_bid = item.get("Current Bid")
-            if not bidder_id or not current_bid:
-                continue
-            if bidder_id not in totals:
-                totals[bidder_id] = {
-                    "bidder_id": bidder_id,
-                    "display_name": item.get("Current Bidder Name"),
-                    "total": 0,
-                    "items_winning": 0,
-                }
-            totals[bidder_id]["total"] += float(current_bid)
-            totals[bidder_id]["items_winning"] += 1
-
-        ranked = sorted(totals.values(), key=lambda b: b["total"], reverse=True)
-        return ranked[:limit]

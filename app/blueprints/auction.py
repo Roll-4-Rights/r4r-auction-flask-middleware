@@ -14,7 +14,6 @@ def _bidder_country():
     return current_user.country if isinstance(current_user, Bidder) else None
 
 
-
 @bp.route("/api/auction/items", methods=["GET"])
 @handle_route_errors("Failed to load auction items")
 def get_auction_items():
@@ -82,8 +81,6 @@ def place_bid_route():
         broadcast_bid_update(item_id)
 
     return jsonify(payload), status
-
-    
 
 
 @bp.route("/api/auction/leaderboard", methods=["GET"])

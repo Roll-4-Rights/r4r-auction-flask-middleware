@@ -143,7 +143,6 @@ def place_bid(bidder, item_id, amount):
     return {"message": "Bid placed", "amount": amount, "extended": extended}, 201
 
 
-
 def top_bidders(items, limit=8):
     """Rank bidders by how much they're currently winning, added up
     across every item where they're the current top bid. Returns a
@@ -168,8 +167,6 @@ def top_bidders(items, limit=8):
     return ranked[:limit]
 
 
-
-
 def broadcast_bid_update(item_id):
     """Push the new price and leaderboard out to every connected
     browser, right after a bid is saved. Re-reads from NocoDB rather
@@ -184,6 +181,3 @@ def broadcast_bid_update(item_id):
 
     items = nocodb_list("Auction Items", limit=1000)
     socketio.emit("leaderboard_updated", top_bidders(items))
-
-
-

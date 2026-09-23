@@ -77,7 +77,38 @@ def place_bid_route():
 
 
 
+@bp.route("/api/auction/leaderboard", methods=["GET"])
+@handle_route_errors("Failed to load leaderboard")
+def get_auction_leaderboard():
+    limit = request.args.get("limit", 8, type=int)
+    response = nocodb_get("Auction Items", limit=1000)
+    items = extract_records(response.json())
+    return jsonify(top_bidders(items, limit=limit)), 200
 
+
+
+def top_bidders(items, limit=8):
+    """Rank bidders by how much they're currently winning, added up
+    across every item where they're the current top bid. Returns a
+    list sorted highest-total first."""
+    totals = {}
+    for item in items:
+        bidder_id = item.get("Current Bidder Id")
+        current_bid = item.get("Current Bid")
+        if not bidder_id or not current_bid:
+            continue
+        if bidder_id not in totals:
+            totals[bidder_id] = {
+                "bidder_id": bidder_id,
+                "display_name": item.get("Current Bidder Name"),
+                "total": 0,
+                "items_winning": 0,
+            }
+        totals[bidder_id]["total"] += float(current_bid)
+        totals[bidder_id]["items_winning"] += 1
+
+    ranked = sorted(totals.values(), key=lambda b: b["total"], reverse=True)
+    return ranked[:limit]
 
     
 

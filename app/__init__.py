@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 from app.blueprints import register_blueprints
 from app.config import Config
-from app.extensions import init_extensions, limiter, login_manager
+from app.extensions import init_extensions, limiter, login_manager, socketio
 from app.models import load_user
 from app.services.email import send_email
 from db import (
@@ -78,4 +78,4 @@ def create_app():
 
 app = create_app()
 
-__all__ = ["create_app", "app", "send_email", "limiter"]
+__all__ = ["create_app", "app", "send_email", "limiter", "socketio"]

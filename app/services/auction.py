@@ -2,6 +2,7 @@ import random
 
 from db import display_name_exists
 from datetime import datetime, timedelta
+from app.services.nocodb import resolve_attachment_urls
 
 ANTI_SNIPE_WINDOW = timedelta(minutes=4)
 
@@ -74,7 +75,7 @@ def transform_auction_item(item, bidder_country=None):
         "description": item.get("Description"),
         "category": item.get("Category"),
         "donator_name": item.get("Donator Name"),
-        "photos": item.get("Photos"),
+        "photos": resolve_attachment_urls(item.get("Photos")),
         "starting_bid": item.get("Starting Bid"),
         "current_bid": item.get("Current Bid"),
         "highest_bidder": item.get("Current Bidder Name"),

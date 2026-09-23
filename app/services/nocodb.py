@@ -1,4 +1,6 @@
 import requests
+import json
+
 from flask import current_app, jsonify
 
 SITE_BASE_TABLES = {"Site Content", "Banner Messages", "Campaign Settings", "Donator Profiles"}
@@ -109,3 +111,28 @@ def write_record_by_id(table_name, record_id, method, body=None, strip_fields=()
     if method == "PATCH":
         return patch_record_by_id(table_name, record_id, body or {}, strip_fields=strip_fields)
     return nocodb_delete(table_name, record_id)
+
+
+def resolve_attachment_urls(value):
+    """Turn a NocoDB attachment column into a list of ready-to-use
+    image URLs. Returns [] if nothing has been uploaded."""
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)  # some NocoDB versions send attachments as text
+        except ValueError:
+            return []
+    if not isinstance(value, list):
+        return []
+
+    urls = []
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        raw = item.get("url") or item.get("path") or item.get("signedUrl") or item.get("signedPath") or ""
+        if not raw:
+            continue
+        if raw.startswith("http"):
+            urls.append(raw)
+        else:
+            urls.append(f"{current_app.config['NOCODB_URL'].rstrip('/')}/{raw.lstrip('/')}")
+    return urls

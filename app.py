@@ -9,7 +9,7 @@ import eventlet
 
 eventlet.monkey_patch()
 
-from app import app, socketio, send_email
+from app import app, socketio, send_email  # noqa: E402
 
 __all__ = ["app", "send_email", "socketio"]
 

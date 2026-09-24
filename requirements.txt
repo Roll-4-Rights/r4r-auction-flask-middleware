@@ -14,3 +14,4 @@ flask-socketio
 gevent
 psycogreen
 ruff==0.9.10
+eventlet

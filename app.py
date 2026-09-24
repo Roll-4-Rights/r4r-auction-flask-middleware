@@ -6,6 +6,7 @@ Deployment entry point — remote containers expect this file.
 """
 
 import eventlet
+
 eventlet.monkey_patch()
 
 from app import app, socketio, send_email
@@ -19,8 +20,6 @@ if __name__ == "__main__":
     print(f"Debug mode: {debug_mode}")
     print("Token hidden from frontend")
     socketio.run(app, host="0.0.0.0", port=5000, debug=debug_mode)
-
-
 
 
 """

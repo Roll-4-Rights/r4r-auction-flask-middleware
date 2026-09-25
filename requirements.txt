@@ -11,7 +11,5 @@ flask-login==0.6.3
 Flask-Limiter==3.5.0
 Pillow==12.1.1
 flask-socketio
-gevent
-psycogreen
+redis
 ruff==0.9.10
-eventlet
